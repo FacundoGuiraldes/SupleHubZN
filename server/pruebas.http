@@ -1,0 +1,16 @@
+### Obtener todos los productos
+GET http://localhost:5000/api/productos
+
+###
+
+### Crear un nuevo producto (POST)
+POST http://localhost:5000/api/productos
+Content-Type: application/json
+
+{
+  "nombre": "Creatina Star Nutrition 300g",
+  "descripcion": "Creatina monohidrato de máxima pureza.",
+  "precio": 42000,
+  "categoria": "Creatinas",
+  "stock": 20
+}
