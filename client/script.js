@@ -3,7 +3,7 @@ const contenedor = document.getElementById('productos-container');
 async function cargarProductos() {
     try {
         // Llamada a tu API
-        const respuesta = await fetch('http://localhost:5000/api/productos');
+        const respuesta = await fetch('https://tu-url-de-render.onrender.com/api/productos');
         const productos = await respuesta.json();
 
         // Limpiamos el mensaje de "Cargando..."
