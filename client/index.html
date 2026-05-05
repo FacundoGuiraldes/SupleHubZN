@@ -23,13 +23,14 @@
     <nav class="sidebar-nav">
       <p class="sidebar-title">Categorías</p>
       <ul>
-        <li><a href="#" class="sidebar-link active">Todos los productos</a></li>
-        <li><a href="#" class="sidebar-link">Proteínas</a></li>
-        <li><a href="#" class="sidebar-link">Creatinas</a></li>
-        <li><a href="#" class="sidebar-link">Aminoácidos</a></li>
-        <li><a href="#" class="sidebar-link">Pre-entrenos</a></li>
-        <li><a href="#" class="sidebar-link">Vitaminas &amp; Minerales</a></li>
-        <li><a href="#" class="sidebar-link">Recuperación</a></li>
+        <li><a href="#" class="sidebar-link active" data-categoria="">Todos los productos</a></li>
+        <li><a href="#" class="sidebar-link" data-categoria="Proteínas">Proteínas</a></li>
+        <li><a href="#" class="sidebar-link" data-categoria="Fuerza">Fuerza</a></li>
+        <li><a href="#" class="sidebar-link" data-categoria="Pre-entrenos">Pre-entrenos</a></li>
+        <li><a href="#" class="sidebar-link" data-categoria="Recuperación">Recuperación</a></li>
+        <li><a href="#" class="sidebar-link" data-categoria="Ganadores">Ganadores</a></li>
+        <li><a href="#" class="sidebar-link" data-categoria="Vitaminas &amp; Minerales">Vitaminas &amp; Minerales</a></li>
+        <li><a href="#" class="sidebar-link" data-categoria="Accesorios">Accesorios</a></li>
       </ul>
     </nav>
     <div class="sidebar-footer">
@@ -104,6 +105,49 @@
   <!-- Scripts: script.js first (preserves fetch logic), then UI behaviors -->
   <script src="/script.js"></script>
   <script>
+    /* ── Category filtering ─────────────────────── */
+    const API_BASE = (typeof VITE_API_URL !== 'undefined' ? VITE_API_URL : null)
+                  || 'https://suplehubzn-backend.onrender.com/api';
+
+    document.querySelectorAll('.sidebar-link').forEach(link => {
+      link.addEventListener('click', async (e) => {
+        e.preventDefault();
+        document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+        closeSidebar();
+
+        const categoria = link.dataset.categoria || '';
+        const url = categoria
+          ? `${API_BASE}/productos?categoria=${encodeURIComponent(categoria)}`
+          : `${API_BASE}/productos`;
+
+        const contenedor = document.getElementById('productos-container');
+        contenedor.innerHTML = '<p class="loading">Cargando suplementos...</p>';
+
+        try {
+          const res = await fetch(url);
+          if (!res.ok) throw new Error(res.status);
+          const productos = await res.json();
+          contenedor.innerHTML = '';
+          if (productos.length === 0) {
+            contenedor.innerHTML = '<p>No hay productos en esta categoría.</p>';
+            return;
+          }
+          productos.forEach(producto => {
+            const card = document.createElement('div');
+            card.classList.add('producto-card');
+            const imagenHTML = producto.imagen
+              ? `<div class="producto-img-wrapper"><img src="${producto.imagen}" alt="${producto.nombre}" class="producto-img" loading="lazy" onerror="this.parentElement.style.display='none'"></div>`
+              : '';
+            card.innerHTML = `${imagenHTML}<div class="producto-info"><p class="categoria">${producto.categoria}</p><h3>${producto.nombre}</h3><p class="descripcion">${producto.descripcion}</p><p class="precio">$${producto.precio.toLocaleString('es-AR')}</p><button class="btn-comprar">Agregar al carrito</button></div>`;
+            contenedor.appendChild(card);
+          });
+        } catch (err) {
+          contenedor.innerHTML = '<p>Error al cargar productos.</p>';
+        }
+      });
+    });
+
     /* ── Sidebar toggle ─────────────────────────── */
     const hamburger  = document.getElementById('hamburger');
     const sidebar    = document.getElementById('sidebar');
