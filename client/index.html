@@ -106,8 +106,9 @@
   <script src="/script.js"></script>
   <script>
     /* ── Category filtering ─────────────────────── */
-    const API_BASE = (typeof VITE_API_URL !== 'undefined' ? VITE_API_URL : null)
-                  || 'https://suplehubzn-backend.onrender.com/api';
+    const API_BASE = typeof API_URL !== 'undefined'
+      ? API_URL
+      : 'https://suplehubzn-backend.onrender.com/api';
 
     document.querySelectorAll('.sidebar-link').forEach(link => {
       link.addEventListener('click', async (e) => {

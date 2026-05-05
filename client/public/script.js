@@ -1,9 +1,8 @@
 const contenedor = document.getElementById('productos-container');
+const API_URL = 'https://suplehubzn-backend.onrender.com/api';
 
 async function cargarProductos() {
     try {
-        // Llamada a tu API real en Render
-        const API_URL = import.meta.env.VITE_API_URL || 'https://suplehubzn-backend.onrender.com/api';
         const respuesta = await fetch(`${API_URL}/productos`);
         
         if (!respuesta.ok) {
