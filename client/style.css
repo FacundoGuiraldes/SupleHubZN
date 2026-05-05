@@ -326,6 +326,7 @@ button { font-family: inherit; }
   justify-content: center;
   padding: 0 5px;
   letter-spacing: 0;
+  transition: transform 0.2s var(--ease);
 }
 
 /* ── Hero Section ───────────────────────────── */
@@ -743,6 +744,37 @@ button { font-family: inherit; }
 }
 
 /* ── Loading State ──────────────────────────── */
+/* ── Toast Notification ─────────────────────────────────── */
+#toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 50px;
+  box-shadow: 0 8px 32px rgba(52, 152, 219, 0.4);
+  z-index: 999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s var(--ease), transform 0.28s var(--ease);
+  white-space: nowrap;
+}
+
+#toast.toast--visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ── Cart badge active state ─────────────────────────────── */
+.cart-count--activo {
+  background: var(--orange) !important;
+  transform: scale(1.15);
+}
+
 .loading {
   grid-column: 1 / -1;
   text-align: center;
