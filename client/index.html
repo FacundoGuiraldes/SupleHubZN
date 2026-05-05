@@ -46,7 +46,8 @@
           placeholder="hola@ejemplo.com"
           autocomplete="email"
         />
-        <p class="carrito-email-hint">Te enviamos la confirmación de compra.</p>
+        <p class="carrito-email-hint">Requerido · Te enviamos la confirmación de compra.</p>
+        <p class="carrito-email-error" id="carritoEmailError">Ingresá un email válido para continuar.</p>
       </div>
 
       <a
@@ -151,6 +152,23 @@
       <p class="section-subtitle">Calidad premium · Resultados reales · Envíos a todo Vicente López</p>
     </div>
 
+    <div class="productos-toolbar">
+      <label for="ordenarPor" class="ordenar-label">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="6" x2="21" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="9" y1="18" x2="15" y2="18"/>
+        </svg>
+        Ordenar por
+      </label>
+      <select id="ordenarPor" class="ordenar-select">
+        <option value="default">Destacados</option>
+        <option value="precio-asc">Precio: menor a mayor</option>
+        <option value="precio-desc">Precio: mayor a menor</option>
+        <option value="nombre-asc">Nombre: A → Z</option>
+        <option value="nombre-desc">Nombre: Z → A</option>
+        <option value="stock-desc">Mayor stock</option>
+      </select>
+    </div>
+
     <main id="productos-container">
       <p class="loading">Cargando suplementos...</p>
     </main>
@@ -198,7 +216,7 @@
             contenedor.innerHTML = '<p>No hay productos en esta categoría.</p>';
             return;
           }
-          renderizarProductos(productos);
+          ordenarYRenderizar(productos);
         } catch (err) {
           contenedor.innerHTML = '<p>Error al cargar productos.</p>';
         }
@@ -229,6 +247,32 @@
     closeBtn.addEventListener('click', closeSidebar);
     overlay.addEventListener('click', closeSidebar);
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSidebar(); });
+
+    /* ── Ordenar por ────────────────────────────── */
+    let productosCache = [];
+
+    function ordenarYRenderizar(productos) {
+      productosCache = productos;
+      aplicarOrden();
+    }
+
+    function aplicarOrden() {
+      const criterio = document.getElementById('ordenarPor').value;
+      const lista = [...productosCache];
+
+      switch (criterio) {
+        case 'precio-asc':   lista.sort((a, b) => a.precio - b.precio); break;
+        case 'precio-desc':  lista.sort((a, b) => b.precio - a.precio); break;
+        case 'nombre-asc':   lista.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es')); break;
+        case 'nombre-desc':  lista.sort((a, b) => b.nombre.localeCompare(a.nombre, 'es')); break;
+        case 'stock-desc':   lista.sort((a, b) => (b.stock || 0) - (a.stock || 0)); break;
+        default: break;
+      }
+
+      renderizarProductos(lista);
+    }
+
+    document.getElementById('ordenarPor').addEventListener('change', aplicarOrden);
 
     /* ── Carrito lateral ────────────────────────── */
     const carritoSidebar = document.getElementById('carritoSidebar');
@@ -309,17 +353,27 @@
       // Botón "Ya pagué · Avisá por WhatsApp"
       document.getElementById('btnWhatsapp').onclick = async () => {
         const emailInput = document.getElementById('carritoEmail');
+        const emailError = document.getElementById('carritoEmailError');
         const email = emailInput ? emailInput.value.trim() : '';
+        const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-        if (email) {
-          try {
-            await fetch(`${API_BASE}/pedidos`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ email, items: carrito, total }),
-            });
-          } catch (_) { /* el email falla silenciosamente, igualmente abrimos WA */ }
+        if (!email || !emailValido) {
+          emailInput.classList.add('input--error');
+          if (emailError) emailError.style.display = 'block';
+          emailInput.focus();
+          return;
         }
+
+        emailInput.classList.remove('input--error');
+        if (emailError) emailError.style.display = 'none';
+
+        try {
+          await fetch(`${API_BASE}/pedidos`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, items: carrito, total }),
+          });
+        } catch (_) { /* falla silenciosamente, igualmente abrimos WA */ }
 
         window.open(waURL, '_blank');
       };
