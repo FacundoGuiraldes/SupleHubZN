@@ -26,12 +26,19 @@ async function cargarProductos() {
             const card = document.createElement('div');
             card.classList.add('producto-card');
 
+            const imagenHTML = producto.imagen
+                ? `<div class="producto-img-wrapper"><img src="${producto.imagen}" alt="${producto.nombre}" class="producto-img" loading="lazy" onerror="this.parentElement.style.display='none'"></div>`
+                : '';
+
             card.innerHTML = `
-                <h3>${producto.nombre}</h3>
-                <p class="categoria">${producto.categoria}</p>
-                <p>${producto.descripcion}</p>
-                <p class="precio">$${producto.precio.toLocaleString('es-AR')}</p>
-                <button class="btn-comprar">Agregar al carrito</button>
+                ${imagenHTML}
+                <div class="producto-info">
+                    <p class="categoria">${producto.categoria}</p>
+                    <h3>${producto.nombre}</h3>
+                    <p class="descripcion">${producto.descripcion}</p>
+                    <p class="precio">$${producto.precio.toLocaleString('es-AR')}</p>
+                    <button class="btn-comprar">Agregar al carrito</button>
+                </div>
             `;
             contenedor.appendChild(card);
         });
