@@ -939,6 +939,49 @@ button { font-family: inherit; }
   letter-spacing: -0.5px;
 }
 
+.carrito-email-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.carrito-email-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.carrito-email-input {
+  width: 100%;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-family: inherit;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+
+.carrito-email-input::placeholder {
+  color: var(--text-muted);
+}
+
+.carrito-email-input:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+}
+
+.carrito-email-hint {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
 .btn-pagar {
   display: flex;
   align-items: center;
@@ -977,6 +1020,7 @@ button { font-family: inherit; }
   font-size: 0.88rem;
   font-weight: 700;
   cursor: pointer;
+  font-family: inherit;
   text-decoration: none;
   transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
   box-shadow: 0 4px 16px rgba(37, 211, 102, 0.25);

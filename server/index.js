@@ -19,10 +19,11 @@ app.use(express.json());
 
 // Importar rutas
 const productRoutes = require('./routes/productRoutes');
+const pedidoRoutes  = require('./routes/pedidoRoutes');
 
 // Usar rutas
-// Todas tus rutas de productos empezarán con /api/productos
 app.use('/api/productos', productRoutes);
+app.use('/api/pedidos',   pedidoRoutes);
 
 // Ruta de prueba para el navegador
 app.get('/', (req, res) => {
