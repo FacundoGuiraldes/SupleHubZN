@@ -100,7 +100,11 @@ async function cargarProductos() {
         }
 
         const productos = await respuesta.json();
-        renderizarProductos(productos);
+        if (typeof ordenarYRenderizar === 'function') {
+            ordenarYRenderizar(productos);
+        } else {
+            renderizarProductos(productos);
+        }
 
     } catch (error) {
         console.error('Error al cargar productos:', error);
