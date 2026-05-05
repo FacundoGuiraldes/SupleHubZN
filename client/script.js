@@ -2,14 +2,25 @@ const contenedor = document.getElementById('productos-container');
 
 async function cargarProductos() {
     try {
-        // Llamada a tu API
-        const respuesta = await fetch('https://tu-url-de-render.onrender.com/api/productos');
+        // Llamada a tu API real en Render
+        const respuesta = await fetch('https://suplehubzn-backend.onrender.com/api/productos');
+        
+        if (!respuesta.ok) {
+            throw new Error(`Error en el servidor: ${respuesta.status}`);
+        }
+
         const productos = await respuesta.json();
 
-        // Limpiamos el mensaje de "Cargando..."
+        // Limpiamos el contenedor
         contenedor.innerHTML = '';
 
-        // Recorremos los productos y creamos el HTML para cada uno
+        // Si no hay productos, mostramos un mensaje
+        if (productos.length === 0) {
+            contenedor.innerHTML = '<p>No hay productos disponibles por el momento.</p>';
+            return;
+        }
+
+        // Recorremos los productos y creamos el HTML
         productos.forEach(producto => {
             const card = document.createElement('div');
             card.classList.add('producto-card');
@@ -23,10 +34,12 @@ async function cargarProductos() {
             `;
             contenedor.appendChild(card);
         });
+
     } catch (error) {
         console.error("Error al cargar productos:", error);
-        contenedor.innerHTML = '<p>Error al conectar con el servidor. ¿Está encendido el Backend?</p>';
+        contenedor.innerHTML = '<p>Error al conectar con el servidor. Por favor, intenta más tarde.</p>';
     }
 }
 
+// Iniciamos la carga
 cargarProductos();
