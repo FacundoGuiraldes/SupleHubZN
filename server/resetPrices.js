@@ -1,22 +1,25 @@
 const mongoose = require('mongoose');
-const Producto = require('./models/Producto'); // Verifica que la ruta a tu modelo sea correcta
-require('dotenv').config();
 
 async function resetearPrecios() {
   try {
-    // 1. Conexión a la base de datos usando tu variable de entorno
-    await mongoose.connect(process.env.MONGO_URI || process.env.DATABASE_URL);
-    console.log("Conectado a MongoDB Atlas...");
+    // Tu cadena de conexión a Atlas
+    const uri = "mongodb+srv://facundoguiraldes101_db_user:mWC9QquYrfIoTxI5@suplecluster.gijg5z3.mongodb.net/suplehub_db?appName=SupleCluster"; 
+    
+    console.log("Conectando a MongoDB Atlas...");
+    await mongoose.connect(uri);
+    
+    const db = mongoose.connection.db;
 
-    // 2. Actualización masiva: pone el precio en 0 a todos los documentos
-    const resultado = await Producto.updateMany({}, { precio: 0 });
+    // Apuntamos directamente a la colección 'products'
+    const resultado = await db.collection('products').updateMany({}, { $set: { precio: 0 } });
 
-    console.log(`¡Éxito! Se actualizaron ${resultado.modifiedCount} productos.`);
-    console.log("Ahora todos los productos en SupleHubZN valen $0.");
-
+    console.log(`✅ ¡Misión cumplida!`);
+    console.log(`🚀 Se actualizaron ${resultado.modifiedCount} documentos en la colección 'products'.`);
+    
+    await mongoose.connection.close();
     process.exit(0);
   } catch (error) {
-    console.error("Error al resetear precios:", error);
+    console.error("❌ Error durante el proceso:", error);
     process.exit(1);
   }
 }
