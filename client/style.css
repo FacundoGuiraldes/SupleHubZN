@@ -109,6 +109,8 @@ button { font-family: inherit; }
   flex-direction: column;
   padding: 28px 20px 24px;
   gap: 28px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .sidebar.open {
