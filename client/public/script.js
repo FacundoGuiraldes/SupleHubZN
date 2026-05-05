@@ -3,7 +3,8 @@ const contenedor = document.getElementById('productos-container');
 async function cargarProductos() {
     try {
         // Llamada a tu API real en Render
-        const respuesta = await fetch('https://suplehubzn-backend.onrender.com/api/productos');
+        const API_URL = import.meta.env.VITE_API_URL || 'https://suplehubzn-backend.onrender.com/api';
+        const respuesta = await fetch(`${API_URL}/productos`);
         
         if (!respuesta.ok) {
             throw new Error(`Error en el servidor: ${respuesta.status}`);
